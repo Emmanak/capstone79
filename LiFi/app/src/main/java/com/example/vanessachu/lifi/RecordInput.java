@@ -3,13 +3,10 @@ package com.example.vanessachu.lifi;
 /**
  * Created by vanessachu on 1/30/17.
  */
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+
 
 
 /**
@@ -19,13 +16,22 @@ public class RecordInput implements Runnable{
     private static final int RECORDER_SAMPLERATE = 8000;
     private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
     private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
-    private AudioRecord recorder;
+    private AudioRecord recorder = null;
     private final Receiver mReceiver;
+    private boolean isRecording = false;
 
     public RecordInput(Receiver theReceiver){
         mReceiver = theReceiver;
     }
 
+    public void onDestroy(){
+        if(recorder != null){
+            isRecording = false;
+            recorder.stop();
+            recorder.release();
+            recorder = null;
+        }
+    }
     /*
     ** Start recording the audio files
     */
@@ -41,9 +47,10 @@ public class RecordInput implements Runnable{
                 RECORDER_AUDIO_ENCODING, AudioRecord.getMinBufferSize(RECORDER_SAMPLERATE,
                 RECORDER_CHANNELS, RECORDER_AUDIO_ENCODING));
 
+        isRecording = true;
         recorder.startRecording();
 
-        while(true){
+        while(isRecording){
             if(recorder.read(sData, 0, AudioRecord.getMinBufferSize(RECORDER_SAMPLERATE,
                     RECORDER_CHANNELS, RECORDER_AUDIO_ENCODING)) == AudioRecord.ERROR_BAD_VALUE){
                 recorder.stop();

@@ -1,3 +1,11 @@
 <resources>
-    <string name="app_name">LiFi</string>
+    <string name="app_name">Welcome To Thunderbird Parkade!</string>
+    <string-array name="destination_names">
+        <item>Choose Destination...</item>
+        <item>Pay Meter</item>
+        <item>Exit 1</item>
+        <item>Exit 2</item>
+        <item>My Car</item>
+    </string-array>
+    <string name="title_activity_main2">Main2Activity</string>
 </resources>

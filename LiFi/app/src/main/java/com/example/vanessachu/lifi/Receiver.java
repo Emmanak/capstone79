@@ -46,15 +46,15 @@ public class Receiver implements Runnable
     private static final int  SYNC_SYMBOL  = 0xD5;
     private static final int  ETX          = 0x03;
     private static final int  SAMPLE_SYMB  = 4;
-    //private static final int  START_SYMBOL = 0x02;
-    private static final int  START_SYMBOL = 0x01;
-    //private static final int  STOP_SYMBOL  = 0x01;
-    private static final int  STOP_SYMBOL  = 0x02;
+    private static final int  START_SYMBOL = 0x02;
+    //private static final int  START_SYMBOL = 0x01;
+    private static final int  STOP_SYMBOL  = 0x01;
+    //private static final int  STOP_SYMBOL  = 0x02;
     private static final int  MASK         = 0x003C0003;
     private static final int  MASK_CHECK   = ((STOP_SYMBOL << 20) | (START_SYMBOL << 18) | STOP_SYMBOL);
-    //private static final long SYNC_MANCHES = 0x00006665;
-    private static final long SYNC_MANCHES = 0x0000999A;
-    private static final int  EDGE_THRESH  = 10000;        //Modification is needed.
+    private static final long SYNC_MANCHES = 0x00006665;
+    //private static final long SYNC_MANCHES = 0x0000999A;
+    private static final int  EDGE_THRESH  = 4100;                   //8650;        //Modification is needed.
 
     private static frame state_check = new frame();
     private static word word_check = new word();
@@ -148,7 +148,7 @@ public class Receiver implements Runnable
     private static int old_edge;
 
     private void sample_signal_edge(){
-        int edge;
+        int edge =0;
 
         // ADD METHOD TO RETURN AUDIO INPUT VALUE!!!!!!!!!!!
         short sensorValue;
@@ -163,25 +163,38 @@ public class Receiver implements Runnable
         }
         //System.out.println("sensorValue: " + sensorValue);
 
-
+        /*
         if ((sensorValue - oldValue) > EDGE_THRESH)
             edge = 1;
         else if ((oldValue - sensorValue) > EDGE_THRESH)
             edge = -1;
         else
             edge = 0;
-
+        */
         /*
-        if((sensorValue >= 0) && (oldValue < 0)){
+        if(sensorValue >= 0){
             edge = 1;
         }
-        else if((sensorValue < 0) && (oldValue >= 0)){
+        else if(sensorValue < 0){
             edge = -1;
         }
         else{
             edge = 0;
         }
         */
+
+        if(sensorValue >= 0){
+            if ((sensorValue - oldValue) > EDGE_THRESH)
+                edge = 1;
+        }
+        else if(sensorValue < 0){
+            if ((oldValue - sensorValue) > EDGE_THRESH)
+                edge = -1;
+        }
+        else{
+            edge = 0;
+        }
+
         oldValue = sensorValue;
 
         if (edge == 0 || edge == old_edge || steady_count < 2){
@@ -243,9 +256,9 @@ public class Receiver implements Runnable
         for (i = 0; i < 16; i = i + 2) { //decoding Manchester
             received_data = (short)(received_data << 1);
             if (((word_check.detected_word >> i) & 0x03) == 0x01) {
-                received_data &= ~0x01;
-            } else {
                 received_data |= 0x01;
+            } else {
+                received_data &= ~0x01;
             }
         }
         //System.out.println("Detected data = " + word_check.detected_word + "         Received data = " + received_data);
