@@ -1,14 +1,8 @@
 package com.capstone.indoorpositioning.onclick;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.capstone.indoorpositioning.entities.User;
-import com.capstone.indoorpositioning.pathfinding.GraphPathImp;
-import com.capstone.indoorpositioning.pathfinding.HeuristicImp;
-import com.capstone.indoorpositioning.pathfinding.Node;
-import com.capstone.indoorpositioning.screens.LevelManager;
 
 /**
  * Created by JackH_000 on 2017-03-23.
@@ -18,8 +12,8 @@ public class TiledMapClickListener extends ClickListener {
     private TiledMapActor actor;
     private User user;
 
-    private IndexedAStarPathFinder<Node> pathFinder;
-    private GraphPathImp resultPath = new GraphPathImp();
+//    private IndexedAStarPathFinder<Node> pathFinder;
+//    private GraphPathImp resultPath = new GraphPathImp();
 
     public TiledMapClickListener (TiledMapActor actor, User user) {
         this.actor = actor;
@@ -29,28 +23,32 @@ public class TiledMapClickListener extends ClickListener {
     @Override
     public void clicked(InputEvent event, float x, float y) {
 
-        pathFinder = new IndexedAStarPathFinder<Node>(LevelManager.graph, false);
+        user.setDestination((int) actor.getX(), (int) actor.getY());
+        user.setUpdatePath(true);
 
-        int startX = (int) user.getX();
-        int startY = (int) user.getY();
+//        pathFinder = new IndexedAStarPathFinder<Node>(LevelManager.graph, false);
+//
+//        int startX = (int) user.getX();
+//        int startY = (int) user.getY();
+//
+//        int endX = (int) actor.getX();
+//        int endY = (int) actor.getY();
+//
+//      //  Gdx.app.log("tile", "width" + LevelManager.tilePixelWidth + " height" + LevelManager.tilePixelHeight);
+//
+//        Gdx.app.log("start", "X" + startX + " Y" + startY);
+//        Gdx.app.log("end", "X" + endX + " Y" + endY);
+//
+//        Node startNode = LevelManager.graph.getNodeByXY(startX, startY);
+//        Node endNode = LevelManager.graph.getNodeByXY(endX, endY);
+//
+//        Gdx.app.log("start", "" + startNode.getIndex());
+//        Gdx.app.log("end", "" + endNode.getIndex());
+//
+//        resultPath.clear();
+//        pathFinder.searchNodePath(startNode, endNode, new HeuristicImp(), resultPath);
+//        Gdx.app.log("Path", "" + resultPath.getCount());
 
-        int endX = (int) actor.getX();
-        int endY = (int) actor.getY();
-
-      //  Gdx.app.log("tile", "width" + LevelManager.tilePixelWidth + " height" + LevelManager.tilePixelHeight);
-
-        Gdx.app.log("start", "X" + startX + " Y" + startY);
-        Gdx.app.log("end", "X" + endX + " Y" + endY);
-
-        Node startNode = LevelManager.graph.getNodeByXY(startX, startY);
-        Node endNode = LevelManager.graph.getNodeByXY(endX, endY);
-
-        Gdx.app.log("start", "" + startNode.getIndex());
-        Gdx.app.log("end", "" + endNode.getIndex());
-
-        resultPath.clear();
-        pathFinder.searchNodePath(startNode, endNode, new HeuristicImp(), resultPath);
-        Gdx.app.log("Path", "" + resultPath.getCount());
 
     }
 }
